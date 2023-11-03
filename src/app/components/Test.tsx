@@ -7,6 +7,9 @@ import { useState } from 'react'
 
 export default function Test() {
   const [queryInput, setQueryInput] = useState<string>('');
+  const [composing, setComposition] = useState(false);
+  const startComposition = () => setComposition(true);
+  const endComposition = () => setComposition(false);
   const [queryResults, setQueryResults] = useState({ docs: [] });
   interface QuerySnapshotItem {
     id: string;
@@ -21,9 +24,7 @@ export default function Test() {
     setQueryInput(e.target.value)
   }
 
-  async function querySearchResult() {
-    console.log("query start");
-    
+  async function getQuerySearchResult() {
     try {
       const result:any = await querySearch(queryInput);
       
@@ -36,8 +37,16 @@ export default function Test() {
       }
     } catch (error) {
       console.error("Error during query:", error);
-      // Handle the error here, e.g., set an error message in state.
-      // setErrorState(error.message);
+      setErrorMessage("")
+    }
+  }
+
+  function handleKeyPress(e: { key: string; }) {
+    switch (e.key) {
+      case "Enter":
+        if(composing) break;
+        getQuerySearchResult();
+        break;
     }
   }
 
@@ -50,8 +59,11 @@ export default function Test() {
               type="text"
               name="data1"
               id="data1"
-              className="block rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300"
+              className="block rounded-md border-0 py-1.5 pl-3 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300"
               onChange={handleInputChange}
+              onKeyDown={handleKeyPress}
+              onCompositionStart={startComposition}
+              onCompositionEnd={endComposition}
             />
           </div>
         </div>        
@@ -60,7 +72,7 @@ export default function Test() {
         <button 
           className="h-10 px-6 font-semibold rounded-md bg-black text-white " 
           type="submit"
-          onClick={querySearchResult}
+          onClick={getQuerySearchResult}
         >
           Search
         </button>
@@ -68,7 +80,7 @@ export default function Test() {
       <ul>
       {queryResults.docs.map((doc: QuerySnapshotItem) => (
         <li key={doc.id}>
-          {JSON.stringify(doc.data().body)}
+          {doc.data().body}
         </li>
       ))}
     </ul>
