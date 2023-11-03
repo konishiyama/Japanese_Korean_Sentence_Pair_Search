@@ -1,46 +1,43 @@
 'use client';
+import { stringify } from "querystring";
 import addData from "./Firebase/Firestore/addData";
 import getDoument from "./Firebase/Firestore/getDoument";
+import querySearch from "./Firebase/Firestore/querySearch";
 import { useState } from 'react'
 
 export default function Test() {
-  const [formValues, setFormValues] = useState({ data1: "", data2: "" })
-  const [dbData, setDbData] = useState({data1: "test", data2:"test", test:{"test":false, "test2":false}})
+  const [queryInput, setQueryInput] = useState<string>('');
+  const [queryResults, setQueryResults] = useState({ docs: [] });
+  interface QuerySnapshotItem {
+    id: string;
+    data: () => any; // Assuming the data() method returns the document's data
+  }
+
   const [errorMessage, setErrorMessage] = useState("")
 
   function handleInputChange(e:any) {
     e.persist()
     setErrorMessage("")
-    setFormValues(currentValues => ({
-      ...currentValues,
-      [e.target.name]: e.target.value,
-    }))
+    setQueryInput(e.target.value)
   }
 
-  async function addDataTest(){
-    const data = {
-      data1: formValues.data1,
-      data2: formValues.data2
-    }
-    const { result, error } = await addData('test', 'test', data)
+  async function querySearchResult() {
+    console.log("query start");
     
-    if (error) {
-      return console.log("formSubmitError")
-    }
-  }
-
-  async function getDataTest(){
-    const { result, error } = await getDoument("test", "test");
-    if(result){
-      const data = result.data();
-      const data1 = data?.data1;
-      const data2 = data?.data2;
-      const test = data?.test;
-      setDbData({data1: data1, data2: data2, test: test})
-    }
-
-    if (error) {
-      return console.log("formSubmitError")
+    try {
+      const result:any = await querySearch(queryInput);
+      
+      if (result) {
+        setQueryResults(result);
+        result.forEach((doc:any) => {
+          // doc.data() is never undefined for query doc snapshots
+          console.log(doc.data().body);
+        });
+      }
+    } catch (error) {
+      console.error("Error during query:", error);
+      // Handle the error here, e.g., set an error message in state.
+      // setErrorState(error.message);
     }
   }
 
@@ -48,7 +45,6 @@ export default function Test() {
     <>  
       <div className="flex w-1/2 justify-center items-center m-auto">
         <div className="m-auto">
-          <label htmlFor="data1" className="block text-sm font-medium leading-6 text-gray-900">data1</label>
           <div className="relative mt-2 rounded-md">
             <input
               type="text"
@@ -59,40 +55,23 @@ export default function Test() {
             />
           </div>
         </div>        
-        <div className="m-auto">
-          <label htmlFor="data2" className="block text-sm font-medium leading-6 text-gray-900">data2</label>
-          <div className="relative mt-2 rounded-md">
-            <input
-              type="text"
-              name="data2"
-              id="data2"
-              className="block rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300"
-              onChange={handleInputChange}
-            />
-          </div>
-        </div>        
       </div>
       <div className="flex items-center justify-center mt-14 ">
         <button 
           className="h-10 px-6 font-semibold rounded-md bg-black text-white " 
           type="submit"
-          onClick={addDataTest}
+          onClick={querySearchResult}
         >
-          Add Data
+          Search
         </button>
       </div>
-      <div className="flex items-center justify-center mt-14 ">
-        <button 
-          className="h-10 px-6 font-semibold rounded-md bg-black text-white " 
-          type="submit"
-          onClick={getDataTest}
-        >
-          Get Data
-        </button>
-      </div>
-      <p>{dbData.data1}</p>
-      <p>{dbData.data2}</p>
-      {/* <p>{data1}</p> */}
+      <ul>
+      {queryResults.docs.map((doc: QuerySnapshotItem) => (
+        <li key={doc.id}>
+          {JSON.stringify(doc.data().body)}
+        </li>
+      ))}
+    </ul>
     </>
   )
 }
