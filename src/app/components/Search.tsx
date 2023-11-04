@@ -72,7 +72,8 @@ export default function Search() {
       <ul>
         {queryResults.docs.map((doc: QuerySnapshotItem) => (
           <li key={doc.id}>
-            {doc.data().body}
+            <p>{doc.data().ja}</p>            
+            <p>{doc.data().ko}</p>            
           </li>
         ))}
       </ul>

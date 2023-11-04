@@ -12,7 +12,7 @@ class Firebase {
   }
 
   async querySearch(queryInput:string){
-    let q = query(collection(this.db, "test"), limit(10));
+    let q = query(collection(this.db, "ja_ko_corpus"), limit(10));
 
     // split input to 2-gram array
     const twoGrams = [];
@@ -23,7 +23,7 @@ class Firebase {
     }
     
     twoGrams.forEach(twoGram => {
-      q = query(q, where(`test.${twoGram}`, '==', true))
+      q = query(q, where(`jaWordMap.${twoGram}`, '==', true))
     });
     const result = await getDocs(q);
     
