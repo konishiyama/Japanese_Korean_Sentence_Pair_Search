@@ -1,19 +1,21 @@
 'use client';
-import { stringify } from "querystring";
-import addData from "./Firebase/Firestore/addData";
-import getDoument from "./Firebase/Firestore/getDoument";
-import querySearch from "./Firebase/Firestore/querySearch";
-import { useState } from 'react'
 
-export default function Test() {
+// import querySearch from "./Firebase/Firestore/querySearch";
+import { useState } from 'react'
+import getFirebaseInstance from "./Firebase/firebase";
+
+export default function Search() {
   const [queryInput, setQueryInput] = useState<string>('');
   const [composing, setComposition] = useState(false);
   const startComposition = () => setComposition(true);
   const endComposition = () => setComposition(false);
   const [queryResults, setQueryResults] = useState({ docs: [] });
+
+  const firebase = getFirebaseInstance();
+
   interface QuerySnapshotItem {
     id: string;
-    data: () => any; // Assuming the data() method returns the document's data
+    data: () => any;
   }
 
   const [errorMessage, setErrorMessage] = useState("")
@@ -24,10 +26,18 @@ export default function Test() {
     setQueryInput(e.target.value)
   }
 
+  function handleKeyPress(e: { key: string; }) {
+    switch (e.key) {
+      case "Enter":
+        if(composing) break;
+        getQuerySearchResult();
+        break;
+    }
+  }
+
   async function getQuerySearchResult() {
     try {
-      const result:any = await querySearch(queryInput);
-      
+      const result:any = await firebase.querySearch(queryInput);
       if (result) {
         setQueryResults(result);
         result.forEach((doc:any) => {
@@ -38,15 +48,6 @@ export default function Test() {
     } catch (error) {
       console.error("Error during query:", error);
       setErrorMessage("")
-    }
-  }
-
-  function handleKeyPress(e: { key: string; }) {
-    switch (e.key) {
-      case "Enter":
-        if(composing) break;
-        getQuerySearchResult();
-        break;
     }
   }
 
@@ -68,22 +69,13 @@ export default function Test() {
           </div>
         </div>        
       </div>
-      <div className="flex items-center justify-center mt-14 ">
-        <button 
-          className="h-10 px-6 font-semibold rounded-md bg-black text-white " 
-          type="submit"
-          onClick={getQuerySearchResult}
-        >
-          Search
-        </button>
-      </div>
       <ul>
-      {queryResults.docs.map((doc: QuerySnapshotItem) => (
-        <li key={doc.id}>
-          {doc.data().body}
-        </li>
-      ))}
-    </ul>
+        {queryResults.docs.map((doc: QuerySnapshotItem) => (
+          <li key={doc.id}>
+            {doc.data().body}
+          </li>
+        ))}
+      </ul>
     </>
   )
 }
