@@ -1,3 +1,4 @@
+import { error } from "console";
 import firebaseConfig from "./config"
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, getDoc, getDocs, setDoc, collection, query, where, limit } from "firebase/firestore";
@@ -11,9 +12,16 @@ class Firebase {
     }
   }
 
-  async querySearch(queryInput:string){
+  async querySearch(queryInput:string, detectedLanguage:string){
     let q = query(collection(this.db, "ja_ko_corpus"), limit(10));
-
+    let targetLangMap:string;
+    if(detectedLanguage == "jpn"){
+      targetLangMap = "jaWordMap"
+    }else if(detectedLanguage == "kor"){
+      targetLangMap = "koWordMap"
+    }else{
+      targetLangMap = "jaWordMap"
+    }
     // split input to 2-gram array
     const twoGrams = [];
     const characters = queryInput.split('');
@@ -21,9 +29,9 @@ class Firebase {
     for (let i = 0; i < characters.length - 1; i++) {
       twoGrams.push(characters[i] + characters[i + 1]);
     }
-    
+
     twoGrams.forEach(twoGram => {
-      q = query(q, where(`jaWordMap.${twoGram}`, '==', true))
+      q = query(q, where(`${targetLangMap}.${twoGram}`, '==', true))
     });
     const result = await getDocs(q);
     

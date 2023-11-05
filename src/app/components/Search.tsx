@@ -3,9 +3,11 @@
 // import querySearch from "./Firebase/Firestore/querySearch";
 import { useState } from 'react'
 import getFirebaseInstance from "./Firebase/firebase";
+import {franc, francAll} from 'franc'
 
 export default function Search() {
   const [queryInput, setQueryInput] = useState<string>('');
+  const [detectedLanguage, setDetectedLanguage] = useState<string>('');
   const [composing, setComposition] = useState(false);
   const startComposition = () => setComposition(true);
   const endComposition = () => setComposition(false);
@@ -20,7 +22,7 @@ export default function Search() {
 
   const [errorMessage, setErrorMessage] = useState("")
 
-  function handleInputChange(e:any) {
+  function handleInputChange(e:React.ChangeEvent<HTMLInputElement>) {
     e.persist()
     setErrorMessage("")
     setQueryInput(e.target.value)
@@ -30,20 +32,27 @@ export default function Search() {
     switch (e.key) {
       case "Enter":
         if(composing) break;
+        detectLanguage();
         getQuerySearchResult();
         break;
     }
   }
 
+  function detectLanguage() {
+    if(queryInput){
+      console.log(queryInput);
+      const language = franc(queryInput, {minLength: 1});
+      setDetectedLanguage(language);
+    } else {
+      setDetectedLanguage('Please enter text');
+    }
+  };
+
   async function getQuerySearchResult() {
     try {
-      const result:any = await firebase.querySearch(queryInput);
+      const result:any = await firebase.querySearch(queryInput, detectedLanguage);
       if (result) {
         setQueryResults(result);
-        result.forEach((doc:any) => {
-          // doc.data() is never undefined for query doc snapshots
-          console.log(doc.data().body);
-        });
       }
     } catch (error) {
       console.error("Error during query:", error);
@@ -71,10 +80,13 @@ export default function Search() {
       </div>
       <ul>
         {queryResults.docs.map((doc: QuerySnapshotItem) => (
-          <li key={doc.id}>
-            <p>{doc.data().ja}</p>            
-            <p>{doc.data().ko}</p>            
-          </li>
+          <>
+            <li key={doc.id}>
+              <p>{doc.data().ja}</p>            
+              <p>{doc.data().ko}</p>            
+            </li>
+            <br />
+          </>
         ))}
       </ul>
     </>
