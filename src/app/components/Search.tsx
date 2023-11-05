@@ -7,7 +7,7 @@ import {franc, francAll} from 'franc'
 
 export default function Search() {
   const [queryInput, setQueryInput] = useState<string>('');
-  const [detectedLanguage, setDetectedLanguage] = useState<string>('');
+  // const [detectedLanguage, setDetectedLanguage] = useState<string>('');
   const [composing, setComposition] = useState(false);
   const startComposition = () => setComposition(true);
   const endComposition = () => setComposition(false);
@@ -32,25 +32,24 @@ export default function Search() {
     switch (e.key) {
       case "Enter":
         if(composing) break;
-        detectLanguage();
+        // detectLanguage();
         getQuerySearchResult();
         break;
     }
   }
 
-  function detectLanguage() {
-    if(queryInput){
-      console.log(queryInput);
-      const language = franc(queryInput, {minLength: 1});
-      setDetectedLanguage(language);
-    } else {
-      setDetectedLanguage('Please enter text');
-    }
-  };
+  // function detectLanguage() {
+  //   if(queryInput){
+  //     const language = franc(queryInput, {minLength: 1});
+  //     // setDetectedLanguage(language);
+  //   } else {
+  //     // setDetectedLanguage('Please enter text');
+  //   }
+  // };
 
   async function getQuerySearchResult() {
     try {
-      const result:any = await firebase.querySearch(queryInput, detectedLanguage);
+      const result:any = await firebase.querySearch(queryInput);
       if (result) {
         setQueryResults(result);
       }
@@ -79,7 +78,7 @@ export default function Search() {
         </div>        
       </div>
       <ul>
-        {queryResults.docs.map((doc: QuerySnapshotItem) => (
+        {queryResults.docs.map((doc:QuerySnapshotItem) => (
           <>
             <li key={doc.id}>
               <p>{doc.data().ja}</p>            
