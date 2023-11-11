@@ -1,9 +1,9 @@
 'use client';
 
 // import querySearch from "./Firebase/Firestore/querySearch";
-import { useState } from 'react'
+import { useState, useEffect } from 'react';
 import getFirebaseInstance from "./Firebase/firebase";
-import {franc, francAll} from 'franc'
+import {franc, francAll} from 'franc';
 
 import Results from './Results';
 
@@ -13,10 +13,15 @@ export default function Search() {
   const startComposition = () => setComposition(true);
   const endComposition = () => setComposition(false);
   const [queryResults, setQueryResults] = useState({ docs: [] });
-  // const [showResultsUl, setShowResultsUl] = useState(false)
-  const [headerMeassage, setHeaderMeassage] = useState<string>('75万件の日韓例文ペアから、検索キーワードにマッチするものを最大で30件まで表示します。')
+  const [showResultsUl, setShowResultsUl] = useState(false);
+  const [headerMeassage, setHeaderMeassage] = useState<string>('75万件の日韓例文ペアから、検索キーワードにマッチするものを最大で30件まで表示します。');
   
   const firebase = getFirebaseInstance();
+
+  const [clientWindowHeight, setClientWindowHeight] = useState<number>(0);
+  const [inputElementBackground, setInputElementBackground] =  useState('');
+  const [inputElementPaddingTop, setInputElementPaddingTop] =  useState('0');
+  const [inputElementPaddingBottom, setInputElementPaddingBottom] =  useState('0');
 
   interface QuerySnapshotItem {
     id: string;
@@ -46,32 +51,67 @@ export default function Search() {
       const result:any = await firebase.querySearch(queryInput);
       const resultLen = result.docs.length;
       if (resultLen > 1) {
-        // setShowResultsUl(true);
+        setShowResultsUl(true);
         setHeaderMeassage(resultLen + '件該当');
         setQueryResults(result);
       }else{
-        setHeaderMeassage('該当する結果はありませんでした');
+        setShowResultsUl(false)
+        setHeaderMeassage('該当する結果はありませんでした。');
       }
     } catch (error) {
       console.error("Error during query:", error);
+      setShowResultsUl(false)
       setErrorMessage("")
     }
   }
 
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  });
+
+  const handleScroll = () => {
+    setClientWindowHeight(window.scrollY);
+  };
+
+  useEffect(() => {
+    console.log(clientWindowHeight);
+    if (clientWindowHeight > 80) {
+      setInputElementBackground('248, 250, 252, 255');
+      setInputElementPaddingTop('1.5rem');
+      setInputElementPaddingBottom('1.5rem');
+    }else{
+      setInputElementBackground('0, 0, 0, 0');
+      setInputElementPaddingTop('0');
+      setInputElementPaddingBottom('0');
+    }
+  }, [clientWindowHeight]);
+
   return (
     <>  
       <div className="justify-center items-center mx-auto">
-        <div className="relative">
-          <div className="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
+        <div 
+          className='relative sticky top-0' 
+          style={{
+            paddingTop:`${inputElementPaddingTop}`,
+            paddingBottom:`${inputElementPaddingBottom}`
+            }}
+        >
+          <button className="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none pointer-events-auto" onClick={getQuerySearchResult}>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
-          </div>
+          </button>
           <input 
             type="search" 
             id="default-search" 
-            className="block w-full p-3 ps-11 shadow-google text-base rounded-full focus:outline-none placeholder-base dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-            placeholder="単語または文章を入力" 
+            // search cancel:https://github.com/tailwindlabs/tailwindcss/discussions/10190
+            className="appearance-none block w-full p-3 ps-11 shadow-google text-base rounded-full focus:outline-none placeholder-base
+            "
+            style={{
+              backgroundColor: `rgba(${inputElementBackground})`,
+              }}
+            placeholder="キーワードを入力" 
             onChange={handleInputChange}
             onKeyDown={handleKeyPress}
             onCompositionStart={startComposition}
@@ -84,7 +124,7 @@ export default function Search() {
             <h3 className='border-b border-solid border-slate-100 rounded-t-lg px-4 py-3 font-semibold'>検索結果</h3>
             <div className='px-4 py-3'>
               <p className='text-light'>{headerMeassage}</p>
-              <ul>
+              <ul className='' style={{ display: showResultsUl ? 'block' : 'none' }}>
                 <Results queryResults={queryResults} />
               </ul>
             </div>

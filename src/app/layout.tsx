@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="ja">
       <body className='flex flex-col min-h-screen flex-grow font-sans text-base'>
         <Header />
-        <div className='w-full mx-auto my-0 p-6 sm:p-7 sm:max-w-4xl lg:w-2/3 lg:max-w-4xl'>
+        <div className='w-full mx-auto my-0 p-6 sm:max-w-4xl lg:w-2/3 lg:max-w-4xl'>
           {children}
         </div>
         {/* <Footer /> */}
