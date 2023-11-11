@@ -13,23 +13,25 @@ class Firebase {
     }
   }
 
+
   async querySearch(queryInput:string){
     let q = query(collection(this.db, "ja_ko_corpus"), limit(10));
+
     const detectedLanguage = franc(queryInput, {minLength: 1});
-    console.log(detectedLanguage);
-
     let targetLangMap:string;
-    if(detectedLanguage == "jpn"){
-      targetLangMap = "ja_n_gram_map"
-    }else if(detectedLanguage == "kor"){
-      targetLangMap = "ko_n_gram__map"
-    }else{
-      targetLangMap = "ja_n_gram_map"
+    switch (detectedLanguage) {
+      case "jpn":
+        targetLangMap = "ja_n_gram_map";
+        break;
+      case "kor":
+        targetLangMap = "ko_n_gram__map";
+        break;
+      default:
+        targetLangMap = "ja_n_gram_map";
     }
-
+    console.log(targetLangMap);
     let result:any;
     const queryInputLen = queryInput.length;
-    console.log(queryInputLen);
     if(queryInputLen == 1){
       q = query(q, where(`${targetLangMap}.${queryInput}`, '==', true))
       result = await getDocs(q);
@@ -41,7 +43,6 @@ class Firebase {
       for (let i = 0; i < characters.length - 1; i++) {
         twoGrams.push(characters[i] + characters[i + 1]);
       }
-      console.log(twoGrams);
       twoGrams.forEach(twoGram => {
         q = query(q, where(`${targetLangMap}.${twoGram}`, '==', true))
       });
@@ -50,6 +51,7 @@ class Firebase {
     console.log(result);
     return result
   }
+
 
   async getDocument(collection:string, id:string) {
     let docRef = doc(this.db, collection, id);
@@ -66,6 +68,7 @@ class Firebase {
     return { result, error };
   }
 
+  
   async addData(colllection:string, id:string, data: any) {
     let result = null;
     let error = null;

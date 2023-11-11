@@ -5,14 +5,17 @@ import { useState } from 'react'
 import getFirebaseInstance from "./Firebase/firebase";
 import {franc, francAll} from 'franc'
 
+import Results from './Results';
+
 export default function Search() {
   const [queryInput, setQueryInput] = useState<string>('');
-  // const [detectedLanguage, setDetectedLanguage] = useState<string>('');
   const [composing, setComposition] = useState(false);
   const startComposition = () => setComposition(true);
   const endComposition = () => setComposition(false);
   const [queryResults, setQueryResults] = useState({ docs: [] });
-
+  // const [showResultsUl, setShowResultsUl] = useState(false)
+  const [headerMeassage, setHeaderMeassage] = useState<string>('75万件の日韓例文ペアから、検索キーワードにマッチするものを最大で30件まで表示します。')
+  
   const firebase = getFirebaseInstance();
 
   interface QuerySnapshotItem {
@@ -38,20 +41,16 @@ export default function Search() {
     }
   }
 
-  // function detectLanguage() {
-  //   if(queryInput){
-  //     const language = franc(queryInput, {minLength: 1});
-  //     // setDetectedLanguage(language);
-  //   } else {
-  //     // setDetectedLanguage('Please enter text');
-  //   }
-  // };
-
   async function getQuerySearchResult() {
     try {
       const result:any = await firebase.querySearch(queryInput);
-      if (result) {
+      const resultLen = result.docs.length;
+      if (resultLen > 1) {
+        // setShowResultsUl(true);
+        setHeaderMeassage(resultLen + '件該当');
         setQueryResults(result);
+      }else{
+        setHeaderMeassage('該当する結果はありませんでした');
       }
     } catch (error) {
       console.error("Error during query:", error);
@@ -61,33 +60,37 @@ export default function Search() {
 
   return (
     <>  
-      <div className="flex w-1/2 justify-center items-center m-auto">
-        <div className="m-auto">
-          <div className="relative mt-2 rounded-md">
-            <input
-              type="text"
-              name="data1"
-              id="data1"
-              className="block rounded-md border-0 py-1.5 pl-3 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300"
-              onChange={handleInputChange}
-              onKeyDown={handleKeyPress}
-              onCompositionStart={startComposition}
-              onCompositionEnd={endComposition}
-            />
+      <div className="justify-center items-center mx-auto">
+        <div className="relative">
+          <div className="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+              </svg>
           </div>
-        </div>        
+          <input 
+            type="search" 
+            id="default-search" 
+            className="block w-full p-3 ps-11 shadow-google text-base rounded-full focus:outline-none placeholder-base dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+            placeholder="単語または文章を入力" 
+            onChange={handleInputChange}
+            onKeyDown={handleKeyPress}
+            onCompositionStart={startComposition}
+            onCompositionEnd={endComposition}
+            required 
+          />  
+        </div>
+        <div className='mt-6 sm:mt-7'>
+          <div className='bg-white shadow-google rounded-lg min-h-96 md:min-h-180'>
+            <h3 className='border-b border-solid border-slate-100 rounded-t-lg px-4 py-3 font-semibold'>検索結果</h3>
+            <div className='px-4 py-3'>
+              <p className='text-light'>{headerMeassage}</p>
+              <ul>
+                <Results queryResults={queryResults} />
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
-      <ul>
-        {queryResults.docs.map((doc:QuerySnapshotItem) => (
-          <>
-            <li key={doc.id}>
-              <p>{doc.data().ja}</p>            
-              <p>{doc.data().ko}</p>            
-            </li>
-            <br />
-          </>
-        ))}
-      </ul>
     </>
   )
 }

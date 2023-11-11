@@ -1,17 +1,14 @@
-function Footer() {
+export default function Footer() {
 	return (
 		<>
-			<div className="flex items-center justify-center mt-14 ">
-				<a
-					href="https://github.com/realstoman/nextjs-firebase-auth"
-					target="__blank"
-					className="text-gray-700 hover:text-gray-900 cursor-pointer underline text-xl"
-				>
-					Github repo
-				</a>
+			<div className="flex items-center justify-center mt-14 p-4">
+					<p>Contact at :  
+						<a 
+							href="mailto:ko.nishiyama.0420@gmail.com" 
+							className="hover:text-purple-400"> ko.nishiyama.0420@gmail.com
+						 </a>
+					</p> 
 			</div>
 		</>
 	);
 }
-
-export default Footer;
