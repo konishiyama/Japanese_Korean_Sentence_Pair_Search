@@ -22,15 +22,17 @@ export default function Search() {
   const [inputElementBackground, setInputElementBackground] =  useState('');
   const [inputElementPaddingTop, setInputElementPaddingTop] =  useState('0');
   const [inputElementPaddingBottom, setInputElementPaddingBottom] =  useState('0');
+  
+  const [errorMessage, setErrorMessage] = useState('')
 
   interface QuerySnapshotItem {
     id: string;
     data: () => any;
   }
 
-  const [errorMessage, setErrorMessage] = useState("")
 
   function handleInputChange(e:React.ChangeEvent<HTMLInputElement>) {
+    setErrorMessage('');
     e.persist()
     setErrorMessage("")
     setQueryInput(e.target.value)
@@ -47,21 +49,26 @@ export default function Search() {
   }
 
   async function getQuerySearchResult() {
-    try {
-      const result:any = await firebase.querySearch(queryInput);
-      const resultLen = result.docs.length;
-      if (resultLen > 1) {
-        setShowResultsUl(true);
-        setHeaderMeassage(resultLen + '件該当');
-        setQueryResults(result);
-      }else{
+    if(queryInput.length != 0){
+      try {
+        const result:any = await firebase.querySearch(queryInput);
+        console.log(queryInput);
+        const resultLen = result.docs.length;
+        if (resultLen > 1) {
+          setShowResultsUl(true);
+          setHeaderMeassage(resultLen + '件該当');
+          setQueryResults(result);
+        }else{
+          setShowResultsUl(false)
+          setHeaderMeassage('該当する結果はありませんでした。');
+        }
+      } catch (error) {
+        console.error("Error during query:", error);
         setShowResultsUl(false)
-        setHeaderMeassage('該当する結果はありませんでした。');
+        setErrorMessage("")
       }
-    } catch (error) {
-      console.error("Error during query:", error);
-      setShowResultsUl(false)
-      setErrorMessage("")
+    }else{
+      setErrorMessage('キーワードを入力してください。');
     }
   }
 
@@ -75,7 +82,6 @@ export default function Search() {
   };
 
   useEffect(() => {
-    console.log(clientWindowHeight);
     if (clientWindowHeight > 80) {
       setInputElementBackground('248, 250, 252, 255');
       setInputElementPaddingTop('1.5rem');
@@ -106,12 +112,13 @@ export default function Search() {
             type="search" 
             id="default-search" 
             // search cancel:https://github.com/tailwindlabs/tailwindcss/discussions/10190
-            className="appearance-none block w-full p-3 ps-11 shadow-google text-base rounded-full focus:outline-none placeholder-base
-            "
+            className={`appearance-none block w-full p-3 ps-11 shadow-google text-base rounded-full focus:outline-none ${
+              errorMessage ? 'placeholder-red' : 'placeholder-base' // Add red color when there's an error
+            }`}
             style={{
               backgroundColor: `rgba(${inputElementBackground})`,
               }}
-            placeholder="キーワードを入力" 
+            placeholder={errorMessage ? errorMessage : "キーワードを入力"}
             onChange={handleInputChange}
             onKeyDown={handleKeyPress}
             onCompositionStart={startComposition}

@@ -26,6 +26,7 @@ const config: Config = {
       },
       placeholderColor: {
         'base': '#5f6368ff',
+        'red': '#EF4444'
       }
     },
   },
