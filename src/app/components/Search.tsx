@@ -51,7 +51,11 @@ export default function Search() {
   async function getQuerySearchResult() {
     if(queryInput.length != 0){
       try {
-        const result:any = await firebase.querySearch(queryInput);
+        //text-pre-processing
+        const regex = /[ 　,\/.、。]/g;
+        const cleanedText = queryInput.replace(regex, '');
+        //query to the DB
+        const result:any = await firebase.querySearch(cleanedText);
         console.log(queryInput);
         const resultLen = result.docs.length;
         if (resultLen > 1) {
