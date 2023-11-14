@@ -14,7 +14,7 @@ export default function Search() {
   const endComposition = () => setComposition(false);
   const [queryResults, setQueryResults] = useState({ docs: [] });
   const [showResultsUl, setShowResultsUl] = useState(false);
-  const [headerMeassage, setHeaderMeassage] = useState<string>('75万件の日韓例文ペアから、検索キーワードにマッチするものを最大で50件まで表示します。');
+  const [headerMeassage, setHeaderMeassage] = useState<string>('80万件の日韓例文ペアから、検索キーワードにマッチするものを最大で50件まで表示します。');
   
   const firebase = getFirebaseInstance();
 
