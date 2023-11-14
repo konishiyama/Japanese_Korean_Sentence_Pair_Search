@@ -15,7 +15,7 @@ class Firebase {
 
 
   async querySearch(queryInput:string){
-    let q = query(collection(this.db, "ja_ko_corpus"), limit(20));
+    let q = query(collection(this.db, "ja_ko_corpus"), limit(50));
 
     const detectedLanguage = franc(queryInput, {minLength: 1});
     let targetLangMap:string;

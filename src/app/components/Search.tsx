@@ -14,7 +14,7 @@ export default function Search() {
   const endComposition = () => setComposition(false);
   const [queryResults, setQueryResults] = useState({ docs: [] });
   const [showResultsUl, setShowResultsUl] = useState(false);
-  const [headerMeassage, setHeaderMeassage] = useState<string>('75万件の日韓例文ペアから、検索キーワードにマッチするものを最大で30件まで表示します。');
+  const [headerMeassage, setHeaderMeassage] = useState<string>('75万件の日韓例文ペアから、検索キーワードにマッチするものを最大で50件まで表示します。');
   
   const firebase = getFirebaseInstance();
 
@@ -116,7 +116,7 @@ export default function Search() {
             type="search" 
             id="default-search" 
             // search cancel:https://github.com/tailwindlabs/tailwindcss/discussions/10190
-            className={`appearance-none block w-full p-3 ps-11 shadow-google text-base rounded-full focus:outline-none ${
+            className={`appearance-none block w-full px-4 py-3 ps-11 shadow-google text-base rounded-full focus:outline-none ${
               errorMessage ? 'placeholder-red' : 'placeholder-base' // Add red color when there's an error
             }`}
             style={{
@@ -132,8 +132,8 @@ export default function Search() {
         </div>
         <div className='mt-6 sm:mt-7'>
           <div className='bg-white shadow-google rounded-lg min-h-96 md:min-h-180'>
-            <h3 className='border-b border-solid border-slate-100 rounded-t-lg px-4 py-3 font-semibold'>検索結果</h3>
-            <div className='px-4 py-3'>
+            <h3 className='border-b border-solid border-slate-100 rounded-t-lg p-4 font-semibold'>検索結果</h3>
+            <div className='p-4'>
               <p className='text-light'>{headerMeassage}</p>
               <ul className='' style={{ display: showResultsUl ? 'block' : 'none' }}>
                 <Results queryResults={queryResults} />
