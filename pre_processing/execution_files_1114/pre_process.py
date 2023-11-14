@@ -3,7 +3,7 @@ import re
 from collections import defaultdict
 
 # Load the JSON data
-original_filename = "ja_to_ko_45k_filtered"
+original_filename = "ja_to_ko_360k_filtered"
 
 with open(original_filename +".json", "r", encoding="utf-8") as json_file:
 # with open("ja_to_ko_45k_filtered.json", "r", encoding="utf-8") as json_file:
@@ -68,18 +68,18 @@ for item in data["data"]:
     ko_n_grams = ko_2grams + ko_1grams
     # Create maps for 1and2grams of each language
     ja_n_gram_map = defaultdict(bool, {gram: True for gram in ja_n_grams})
-    ko_n_gram__map = defaultdict(bool, {gram: True for gram in ko_n_grams})
+    ko_n_gram_map = defaultdict(bool, {gram: True for gram in ko_n_grams})
     
     # Create a new JSON item
     new_item = {
         "ja": ja_text,
         "ko": ko_text,
         "ja_n_gram_map": ja_n_gram_map,
-        "ko_n_gram_map": ko_n_gram__map
+        "ko_n_gram_map": ko_n_gram_map
     }
 
     result.append(new_item)
 
 # Save the result to a new JSON file
-with open("mapped2_" + original_filename + ".json", "w", encoding="utf-8") as output_file:
+with open("mapped_" + original_filename + ".json", "w", encoding="utf-8") as output_file:
     json.dump(result, output_file, ensure_ascii=False, indent=2)
