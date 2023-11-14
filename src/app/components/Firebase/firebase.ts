@@ -24,7 +24,7 @@ class Firebase {
         targetLangMap = "ja_n_gram_map";
         break;
       case "kor":
-        targetLangMap = "ko_n_gram__map";
+        targetLangMap = "ko_n_gram_map";
         break;
       default:
         targetLangMap = "ja_n_gram_map";
