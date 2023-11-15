@@ -56,7 +56,6 @@ export default function Search() {
         const cleanedText = queryInput.replace(regex, '');
         //query to the DB
         const result:any = await firebase.querySearch(cleanedText);
-        console.log(queryInput);
         const resultLen = result.docs.length;
         if (resultLen > 1) {
           setShowResultsUl(true);
