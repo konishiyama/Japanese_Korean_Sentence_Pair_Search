@@ -22,7 +22,8 @@ const config: Config = {
       },
       colors: {
         'base': '#202124',
-        'light': '#5f6368ff'
+        'light': '#5f6368ff',
+        'indigo-shade': '#4B0082'
       },
       placeholderColor: {
         'base': '#5f6368ff',
