@@ -1,0 +1,10 @@
+{
+  "server-component": {
+    "welcome": "ようこそ"
+  },
+  "form": {
+    "name": "ニシヤマ",
+    "email": "email",
+    "city": "東京"
+  }
+}
