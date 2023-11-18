@@ -3,8 +3,6 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import GoogleAnalytics from './GoogleAnalytics';
 import { i18n } from '../i18n'
-import Header from './components/Header';
-import Footer from './components/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -28,13 +26,8 @@ export default function RootLayout({
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
             <GoogleAnalytics ga_id= 
             {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
-          ) : null}
-
-        <Header />
-        <div className='w-full mx-auto my-0 p-6 sm:max-w-4xl lg:w-2/3 lg:max-w-4xl'>
+          ) : null}        
           {children}
-        </div>
-        {/* <Footer /> */}
       </body>
     </html>
   );

@@ -1,20 +1,33 @@
 'use client';
 
-// import querySearch from "./Firebase/Firestore/querySearch";
 import { useState, useEffect } from 'react';
 import getFirebaseInstance from "./Firebase/firebase";
-import {franc, francAll} from 'franc';
+import { NextPage } from 'next';
 
 import Results from './Results';
 
-export default function Search() {
+interface SearchProps {
+  search_props:{
+    header_messages: {
+      base: string;
+      resultNums: string;
+      noResults: string;
+    };
+    placeHolder: string;
+    placeHolderError: string;
+    windowTitle: string;
+  }
+}
+
+// export default function Search() {
+const Search: NextPage<SearchProps> = ({ search_props }) => {
   const [queryInput, setQueryInput] = useState<string>('');
   const [composing, setComposition] = useState(false);
   const startComposition = () => setComposition(true);
   const endComposition = () => setComposition(false);
   const [queryResults, setQueryResults] = useState({ docs: [] });
   const [showResultsUl, setShowResultsUl] = useState(false);
-  const [headerMeassage, setHeaderMeassage] = useState<string>('80万件の日韓例文ペアから、検索キーワードにマッチするものを最大で50件まで表示します。');
+  const [headerMeassage, setHeaderMeassage] = useState<string>(search_props.header_messages.base);
   
   const firebase = getFirebaseInstance();
 
@@ -59,11 +72,11 @@ export default function Search() {
         const resultLen = result.docs.length;
         if (resultLen > 1) {
           setShowResultsUl(true);
-          setHeaderMeassage(resultLen + '件該当');
+          setHeaderMeassage(resultLen + search_props.header_messages.resultNums);
           setQueryResults(result);
         }else{
           setShowResultsUl(false)
-          setHeaderMeassage('該当する結果はありませんでした。');
+          setHeaderMeassage(search_props.header_messages.noResults);
         }
       } catch (error) {
         console.error("Error during query:", error);
@@ -71,7 +84,7 @@ export default function Search() {
         setErrorMessage("")
       }
     }else{
-      setErrorMessage('キーワードを入力してください。');
+      setErrorMessage(search_props.placeHolderError);
     }
   }
 
@@ -121,7 +134,7 @@ export default function Search() {
             style={{
               backgroundColor: `rgba(${inputElementBackground})`,
               }}
-            placeholder={errorMessage ? errorMessage : "キーワードを入力"}
+            placeholder={errorMessage ? errorMessage : search_props.placeHolder}
             onChange={handleInputChange}
             onKeyDown={handleKeyPress}
             onCompositionStart={startComposition}
@@ -131,7 +144,7 @@ export default function Search() {
         </div>
         <div className='mt-6 sm:mt-7'>
           <div className='bg-white shadow-google rounded-lg min-h-96 md:min-h-180'>
-            <h3 className='border-b border-solid border-slate-100 rounded-t-lg p-4 font-semibold'>検索結果</h3>
+            <h3 className='border-b border-solid border-slate-100 rounded-t-lg p-4 font-semibold'>{search_props.windowTitle}</h3>
             <div className='p-4'>
               <p className='text-light'>{headerMeassage}</p>
               <ul className='' style={{ display: showResultsUl ? 'block' : 'none' }}>
@@ -144,3 +157,5 @@ export default function Search() {
     </>
   )
 }
+
+export default Search;

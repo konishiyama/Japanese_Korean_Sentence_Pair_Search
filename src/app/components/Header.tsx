@@ -1,6 +1,7 @@
 'use client';
 
 import { Fragment, useState } from 'react'
+import { NextPage } from 'next';
 import Image from 'next/image'
 import { Dialog, Popover, Transition } from '@headlessui/react'
 import {
@@ -9,25 +10,33 @@ import {
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link';
+import ReactCountryFlag from "react-country-flag"
+import { Locale } from '@components/i18n';
+import LocaleSwitcher from './Lang/local-switcher';
 
-// function classNames(...classes: string[]) {
-//   return classes.filter(Boolean).join(' ')
-// }
 
-export default function Header() {
+interface Dictionary {
+    header_title: string;
+}
+
+interface HeaderProps {
+  header_props: Dictionary;
+  lang: Locale;
+}
+
+const Header: NextPage<HeaderProps> = ({ header_props, lang }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
   return (
     <header className="bg-white">
       <nav className="mx-auto flex max-w-7xl items-center justify-between pt-6 px-6 lg:pt-8 px-8" aria-label="Global">
         <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5">
-            <span className="sr-only">Logo</span>
-            <img className="h-8 w-8" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="" />
+            <span className="sr-only">Switch Language</span>
+            <LocaleSwitcher lang={lang}/>
           </Link>
         </div>
         <h1 className='text-xl font-semibold'>
-          <Link href='/'>日韓例文検索</Link>
+          <Link href={`/${lang}`}>{header_props.header_title}</Link>
         </h1>
         <div className="lg:flex lg:flex-1 lg:justify-end">
           <Link href="/about" className="text-sm text-base font-semibold leading-6 ">
@@ -38,3 +47,5 @@ export default function Header() {
     </header>
   )
 }
+
+export default Header;

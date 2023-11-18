@@ -1,10 +1,18 @@
 {
-  "server-component": {
-    "welcome": "ようこそ"
-  },
-  "form": {
-    "name": "ニシヤマ",
+  "header_props": {
+    "header_title": "日韓例文検索",
     "email": "email",
     "city": "東京"
+  },
+  "search_props": {
+    "header_messages": {
+      "base": "80万件の日韓例文ペアから、検索キーワードにマッチするものを最大で50件まで表示します。",
+      "resultNums": "件該当",
+      "noResults": "該当する結果はありませんでした。"
+    },
+    "placeHolder": "キーワードを入力",
+    "placeHolderError": "キーワードを入力してください。",
+    "windowTitle": "検索結果"
   }
+
 }

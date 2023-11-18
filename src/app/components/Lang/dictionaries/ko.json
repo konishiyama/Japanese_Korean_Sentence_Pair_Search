@@ -1,7 +1,15 @@
 {
-  "form": {
-    "name": "니시야마",
-    "email": "email",
-    "city": "서울"
+  "header_props": {
+    "header_title": "한일예문검색"
+  },
+  "search_props": {
+    "header_messages": {
+      "base": "80만 개의 한-일 예문 쌍에서 검색 키워드와 일치하는 예문을 최대 50개까지 표시합니다.",
+      "resultNums": "개 결과:",
+      "noResults": "해당 결과 없음."
+    },
+    "placeHolder": "검색 키워드 입력",
+    "placeHolderError": "검색 키워드를 입력해주세요.",
+    "windowTitle": "검색결과"
   }
 }
