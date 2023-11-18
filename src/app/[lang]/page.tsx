@@ -1,9 +1,6 @@
 import Search from '../components/Search';
-// import Results from './components/Results';
-import Link from 'next/link';
 import { Locale } from '../../i18n';
 import { getDictionary } from '../components/Lang/dictionaries';
-import LocaleSwitcher from '../components/Lang/local-switcher';
 import Header from '../components/Header';
 
 export default async function Home({
