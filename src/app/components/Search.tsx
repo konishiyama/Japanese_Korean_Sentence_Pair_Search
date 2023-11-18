@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import getFirebaseInstance from "./Firebase/firebase";
 import { NextPage } from 'next';
-
 import Results from './Results';
 
 interface SearchProps {

@@ -2,7 +2,7 @@ import { error } from "console";
 import firebaseConfig from "./config"
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, getDoc, getDocs, setDoc, collection, query, where, limit } from "firebase/firestore";
-import {franc, francAll} from 'franc'
+import { franc } from 'franc'
 
 class Firebase {
   db: any;
@@ -16,7 +16,6 @@ class Firebase {
 
   async querySearch(queryInput:string){
     let q = query(collection(this.db, "ja_ko_corpus"), limit(50));
-
     const detectedLanguage = franc(queryInput, {minLength: 1});
     let targetLangMap:string;
     switch (detectedLanguage) {
@@ -29,14 +28,13 @@ class Firebase {
       default:
         targetLangMap = "ja_n_gram_map";
     }
-    console.log(targetLangMap);
     let result:any;
     const queryInputLen = queryInput.length;
     if(queryInputLen == 1){
       q = query(q, where(`${targetLangMap}.${queryInput}`, '==', true))
       result = await getDocs(q);
     }else{ 
-      // split input to 2-gram array
+      // split input into 2-gram array
       const twoGrams = [];
       const characters = queryInput.split('');
       
@@ -48,7 +46,6 @@ class Firebase {
       });
       result = await getDocs(q);  
     }
-    console.log(result);
     return result
   }
 
@@ -83,6 +80,7 @@ class Firebase {
 
     return { result, error };
   }
+
   
 }
 

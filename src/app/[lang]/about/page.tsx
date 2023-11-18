@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Locale } from '@components/i18n';
 import { getDictionary } from '@components/app/components/Lang/dictionaries';
 import Header from '@components/app/components/Header';
