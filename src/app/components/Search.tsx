@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import getFirebaseInstance from "./Firebase/firebase";
 import { NextPage } from 'next';
+import { Locale } from '@components/i18n';
 import Results from './Results';
 
 interface SearchProps {
@@ -16,10 +17,12 @@ interface SearchProps {
     placeHolderError: string;
     windowTitle: string;
   }
+  lang: Locale;
 }
 
+
 // export default function Search() {
-const Search: NextPage<SearchProps> = ({ search_props }) => {
+const Search: NextPage<SearchProps> = ({ search_props, lang }) => {
   const [queryInput, setQueryInput] = useState<string>('');
   const [composing, setComposition] = useState(false);
   const startComposition = () => setComposition(true);
@@ -36,12 +39,6 @@ const Search: NextPage<SearchProps> = ({ search_props }) => {
   const [inputElementPaddingBottom, setInputElementPaddingBottom] =  useState('0');
   
   const [errorMessage, setErrorMessage] = useState('')
-
-  interface QuerySnapshotItem {
-    id: string;
-    data: () => any;
-  }
-
 
   function handleInputChange(e:React.ChangeEvent<HTMLInputElement>) {
     setErrorMessage('');
@@ -147,7 +144,7 @@ const Search: NextPage<SearchProps> = ({ search_props }) => {
             <div className='p-4'>
               <p className='text-light'>{headerMeassage}</p>
               <ul className='' style={{ display: showResultsUl ? 'block' : 'none' }}>
-                <Results queryResults={queryResults} />
+                <Results queryResults={queryResults} lang={lang} />
               </ul>
             </div>
           </div>

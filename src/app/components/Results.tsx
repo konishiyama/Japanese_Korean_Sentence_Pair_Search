@@ -1,5 +1,6 @@
 import { NextPage } from 'next';
 import React from 'react';
+import { Locale } from '@components/i18n';
 
 interface QuerySnapshotItem {
   id: string;
@@ -8,15 +9,25 @@ interface QuerySnapshotItem {
 
 interface ResultsListProps {
   queryResults: { docs: QuerySnapshotItem[] };
+  lang: Locale;
 }
 
-const Results: NextPage<ResultsListProps> = ({ queryResults }) => (
+const Results: NextPage<ResultsListProps> = ({ queryResults, lang }) => (
   <>
     {queryResults.docs.map((doc: QuerySnapshotItem) => (
         <React.Fragment key={doc.id}>
           <li className='py-4 border-b border-solid border-slate-50 text-sm md:text-base'>
-            <p className='font-extralight'>{doc.data().ja}</p>
-            <p>{doc.data().ko}</p>
+            {lang === 'ja' ? (
+              <>
+                <p className='font-extralight'>{doc.data().ja}</p>
+                <p>{doc.data().ko}</p>
+              </>
+            ) : (
+              <>
+                <p>{doc.data().ko}</p>
+                <p className='font-extralight'>{doc.data().ja}</p>
+              </>
+            )}
           </li>
         </React.Fragment>
       ))}
