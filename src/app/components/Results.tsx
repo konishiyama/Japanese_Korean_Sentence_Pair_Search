@@ -20,11 +20,11 @@ const Results: NextPage<ResultsListProps> = ({ queryResults, lang }) => (
             {lang === 'ja' ? (
               <>
                 <p className='font-extralight'>{doc.data().ja}</p>
-                <p>{doc.data().ko}</p>
+                <p className='font-extralight'>{doc.data().ko}</p>
               </>
             ) : (
               <>
-                <p>{doc.data().ko}</p>
+                <p className='font-extralight'>{doc.data().ko}</p>
                 <p className='font-extralight'>{doc.data().ja}</p>
               </>
             )}
