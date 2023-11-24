@@ -29,7 +29,7 @@ const Header: NextPage<HeaderProps> = ({ header_props, lang }) => {
           <Link href={`/${lang}`}>{header_props.header_title}</Link>
         </h1>
         <div className="lg:flex lg:flex-1 lg:justify-end">
-          <Link href="/about" className="text-sm text-base font-semibold leading-6 ">
+          <Link href={`/${lang}/about`} className="text-sm text-base font-semibold leading-6 ">
             About
           </Link>
         </div>
