@@ -18,7 +18,7 @@ interface HeaderProps {
 const Header: NextPage<HeaderProps> = ({ header_props, lang }) => {
   return (
     <header className="bg-white">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between pt-6 px-6 lg:pt-8 px-8" aria-label="Global">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between py-6 px-6 lg:py-8 px-8" aria-label="Global">
         <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Switch Language</span>
