@@ -24,7 +24,7 @@ export default async function About({
             <div className='text-light text-center mt-10 mb-10 sm:mt-16 sm:mb-16'>
               <a 
                 href="mailto:ko.nishiyama.0420@gmail.com"
-                className="font-semibold hover:text-indigo-shade"> ko.nishiyama.0420@gmail.com
+                className="font-semibold hover:text-indigo-shade"> Contact
                 </a>
             </div>
           </div>
